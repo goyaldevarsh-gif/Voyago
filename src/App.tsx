@@ -38,7 +38,7 @@ export default function App() {
   if (phase === 'signedOut') return <AuthScreen />;
 
   const path = loc.pathname;
-  const hideChrome = path === '/trips/new' || /\/edit$/.test(path) || path.startsWith('/chat') || /\/review$/.test(path);
+  const hideChrome = path === '/trips/new' || /\/edit$/.test(path) || path.startsWith('/chat') || /\/review$/.test(path) || /\/packing$/.test(path) || /^\/templates\/(default|mine)\//.test(path) || /\/notes$/.test(path);
   const hideFab = hideChrome || /\/packing$/.test(path);
 
   return (
