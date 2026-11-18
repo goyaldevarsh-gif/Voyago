@@ -1,4 +1,5 @@
 import { db } from './local';
+import { defaultPackWhen } from '../lib/lastMinute';
 import { getUid } from '../lib/session';
 import { nowIso, uid, normName } from '../lib/util';
 import type {
@@ -124,7 +125,8 @@ export async function addItem(
     notes: input.notes ?? '',
     bag: input.bag ?? null,
     sort_order: await nextSort(tripId, input.category),
-    source: input.source ?? 'manual'
+    source: input.source ?? 'manual',
+    pack_when: defaultPackWhen(input.name)
   } as Item);
   return { item, merged: false };
 }

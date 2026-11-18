@@ -56,6 +56,8 @@ export interface Item extends Base {
   bag: string | null;
   sort_order: number;
   source: ItemSource;
+  /** 'last_minute' = goes in on the morning you leave (charger, wallet, medicines in use) */
+  pack_when?: 'any' | 'last_minute';
 }
 
 export interface Category extends Base {

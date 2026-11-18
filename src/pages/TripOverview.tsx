@@ -26,6 +26,7 @@ export default function TripOverview() {
     { icon: 'Wallet', label: 'Expenses', sub: 'Budget and spending', to: `/trips/${trip.id}/expenses`, tone: 'bg-orange-50 text-orange-600' },
     { icon: 'FileText', label: 'Documents', sub: 'IDs, tickets, files', to: `/trips/${trip.id}/documents`, tone: 'bg-cyan-50 text-cyan-600' },
     { icon: 'BookOpen', label: 'Travel Journal', sub: 'Moments and photos', to: `/trips/${trip.id}/journal`, tone: 'bg-fuchsia-50 text-fuchsia-600' },
+    { icon: 'Clock', label: 'Travel Day', sub: 'Last-minute items and what to wear', to: `/trips/${trip.id}/travel-day`, tone: 'bg-sky-50 text-sky-600' },
     { icon: 'ShieldCheck', label: 'Final Review', sub: s.essentialPending.length ? `${s.essentialPending.length} essentials pending` : 'Check before you go', to: `/trips/${trip.id}/review`, tone: 'bg-indigo-50 text-indigo-600' }
   ];
 

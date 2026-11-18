@@ -8,9 +8,10 @@ import { db } from '../db/local';
 import { BAGS, DEFAULT_CATEGORIES, searchCatalog } from '../data/catalog';
 import { generateForTrip } from '../lib/generator';
 import { nightsOf } from '../lib/util';
+import { isLastMinute } from '../lib/lastMinute';
 import type { Item, Priority } from '../types';
 
-type Filter = 'all' | 'pending' | 'packed' | 'essential';
+type Filter = 'all' | 'pending' | 'packed' | 'essential' | 'last';
 const catIcon = (n: string) => DEFAULT_CATEGORIES.find((c) => c.name === n)?.icon ?? 'Package';
 
 export default function Packing() {
@@ -50,6 +51,7 @@ export default function Packing() {
     if (filter === 'pending') return !i.packed;
     if (filter === 'packed') return i.packed;
     if (filter === 'essential') return i.priority === 'essential';
+    if (filter === 'last') return isLastMinute(i);
     return true;
   });
 
@@ -82,7 +84,7 @@ export default function Packing() {
           <Input className="pl-10" placeholder="Search items" aria-label="Search items" value={q} onChange={(e) => setQ(e.target.value)} />
         </div>
         <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4">
-          {(['all', 'pending', 'packed', 'essential'] as Filter[]).map((f) => <Chip key={f} active={filter === f} onClick={() => setFilter(f)}>{f[0].toUpperCase() + f.slice(1)}</Chip>)}
+          {(['all', 'pending', 'packed', 'essential', 'last'] as Filter[]).map((f) => <Chip key={f} active={filter === f} onClick={() => setFilter(f)}>{f === 'last' ? 'Last minute' : f[0].toUpperCase() + f.slice(1)}</Chip>)}
           <span className="w-px bg-slate-300 mx-1" />
           <Chip active={view === 'category'} onClick={() => setView('category')}>By category</Chip>
           <Chip active={view === 'bag'} onClick={() => setView('bag')}>By bag</Chip>
@@ -118,7 +120,7 @@ export default function Packing() {
                     </button>
                     <button className="flex-1 min-w-0 text-left" onClick={() => setEdit(i)}>
                       <p className={`font-semibold leading-snug ${i.packed ? 'line-through text-slate-400' : ''}`}>
-                        {i.priority === 'essential' && <Icon name="Star" size={13} className="inline text-warn fill-warn mr-1 -mt-0.5" />}{i.name}
+                        {i.priority === 'essential' && <Icon name="Star" size={13} className="inline text-warn fill-warn mr-1 -mt-0.5" />}{i.name}{isLastMinute(i) && !i.packed && <Icon name="Clock" size={13} className="inline text-teal ml-1.5 -mt-0.5" />}
                       </p>
                       {(i.notes || i.quantity > 1) && <p className="text-xs text-slate2 line-clamp-2">{i.quantity > 1 ? `×${i.quantity}` : ''}{i.quantity > 1 && i.notes ? ' · ' : ''}{i.notes}</p>}
                     </button>
@@ -227,7 +229,7 @@ function EditSheet({ item, onClose, catNames }: { item: Item | null; onClose: ()
   if (!item || !i) return null;
   const set = (patch: Partial<Item>) => setI({ ...i, ...patch });
   async function save() {
-    await updateItem(i!.id, { name: i!.name.trim() || item!.name, category: i!.category, quantity: i!.quantity, priority: i!.priority, notes: i!.notes, bag: i!.bag });
+    await updateItem(i!.id, { name: i!.name.trim() || item!.name, category: i!.category, quantity: i!.quantity, priority: i!.priority, notes: i!.notes, bag: i!.bag, pack_when: isLastMinute(i!) ? 'last_minute' : 'any' });
     onClose();
   }
   return (
@@ -239,6 +241,7 @@ function EditSheet({ item, onClose, catNames }: { item: Item | null; onClose: ()
         <div className="flex items-center gap-4">
           <Stepper value={i.quantity} onChange={(n) => set({ quantity: n })} />
           <Chip active={i.priority === 'essential'} onClick={() => set({ priority: i.priority === 'essential' ? 'optional' : 'essential' })}>Essential</Chip>
+          <Chip active={isLastMinute(i)} onClick={() => set({ pack_when: isLastMinute(i) ? 'any' : 'last_minute' })}>Pack on travel morning</Chip>
         </div>
         <Field label="Notes"><Textarea rows={2} value={i.notes} onChange={(e) => set({ notes: e.target.value })} /></Field>
         <div className="flex gap-2">
