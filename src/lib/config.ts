@@ -12,7 +12,8 @@ export function getBackendConfig(): BackendConfig | null {
   if (url && anonKey) return { url, anonKey };
   try {
     const raw = localStorage.getItem(KEY);
-    if (!raw) return null;
+    if (raw === 'off') return null;
+    if (!raw) return DEFAULT_PROJECT;
     const c = JSON.parse(raw) as BackendConfig;
     return c.url && c.anonKey ? c : null;
   } catch {
@@ -20,7 +21,13 @@ export function getBackendConfig(): BackendConfig | null {
   }
 }
 
+/** Public project URL + publishable (anon-level) key. Safe to ship: access is enforced by Row Level Security. */
+const DEFAULT_PROJECT: BackendConfig = {
+  url: 'https://ylvlgsjirgrxergtyrsh.supabase.co',
+  anonKey: 'sb_publishable_xlOxSOZVdhTeFBlNFjHATg_VZCSUpfi'
+};
+
 export function saveBackendConfig(c: BackendConfig | null): void {
   if (c) localStorage.setItem(KEY, JSON.stringify({ url: c.url.trim().replace(/\/$/, ''), anonKey: c.anonKey.trim() }));
-  else localStorage.removeItem(KEY);
+  else localStorage.setItem(KEY, 'off');
 }
