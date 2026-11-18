@@ -5,8 +5,8 @@ import { REMOTE_TABLE, WRITABLE, type SyncTable } from '../types';
 import { LOCAL_UID } from '../lib/session';
 
 /** Parents before children, so foreign keys always resolve. */
-const PUSH_ORDER: SyncTable[] = ['trips', 'travellers', 'categories', 'templates', 'templateItems', 'items', 'preferences', 'conversations', 'messages'];
-const PULL_ORDER: SyncTable[] = ['trips', 'travellers', 'categories', 'templates', 'templateItems', 'items', 'preferences', 'conversations', 'messages', 'actionLogs'];
+const PUSH_ORDER: SyncTable[] = ['trips', 'travellers', 'categories', 'templates', 'templateItems', 'items', 'documents', 'itinerary', 'bookings', 'expenses', 'journal', 'preferences', 'conversations', 'messages'];
+const PULL_ORDER: SyncTable[] = ['trips', 'travellers', 'categories', 'templates', 'templateItems', 'items', 'documents', 'itinerary', 'bookings', 'expenses', 'journal', 'preferences', 'conversations', 'messages', 'actionLogs'];
 const MAX_ATTEMPTS = 8;
 
 export interface SyncState {

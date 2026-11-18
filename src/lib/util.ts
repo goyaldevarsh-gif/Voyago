@@ -59,3 +59,16 @@ export function greeting(): string {
 }
 
 export const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n));
+
+export const inr = (n: number) => '₹' + Math.round(n).toLocaleString('en-IN');
+export function fmtDay(s: string | null | undefined): string {
+  if (!s) return '';
+  return parseDay(s).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' });
+}
+export function tripDays(start: string, end: string): string[] {
+  const out: string[] = [];
+  const d = parseDay(start);
+  const last = parseDay(end);
+  for (let i = 0; i < 60 && d <= last; i++) { out.push(todayStr(d)); d.setDate(d.getDate() + 1); }
+  return out;
+}

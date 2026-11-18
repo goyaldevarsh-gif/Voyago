@@ -13,6 +13,11 @@ import Templates from './pages/Templates';
 import TemplateDetail from './pages/TemplateDetail';
 import Profile from './pages/Profile';
 import Chat from './pages/Chat';
+import Itinerary from './pages/Itinerary';
+import Bookings from './pages/Bookings';
+import Expenses from './pages/Expenses';
+import Documents from './pages/Documents';
+import Journal from './pages/Journal';
 import AuthScreen from './pages/AuthScreen';
 
 const TABS = [
@@ -38,8 +43,8 @@ export default function App() {
   if (phase === 'signedOut') return <AuthScreen />;
 
   const path = loc.pathname;
-  const hideChrome = path === '/trips/new' || /\/edit$/.test(path) || path.startsWith('/chat') || /\/review$/.test(path) || /\/packing$/.test(path) || /^\/templates\/(default|mine)\//.test(path) || /\/notes$/.test(path);
-  const hideFab = hideChrome || /\/packing$/.test(path);
+  const hideChrome = path === '/trips/new' || /\/edit$/.test(path) || path.startsWith('/chat') || /\/review$/.test(path) || /\/packing$/.test(path) || /^\/templates\/(default|mine)\//.test(path) || /\/(notes|itinerary|bookings|expenses|documents|journal)$/.test(path);
+  const hideFab = hideChrome;
 
   return (
     <div className="min-h-full flex flex-col">
@@ -54,6 +59,11 @@ export default function App() {
           <Route path="/trips/:id/packing" element={<Packing />} />
           <Route path="/trips/:id/notes" element={<Notes />} />
           <Route path="/trips/:id/review" element={<Review />} />
+          <Route path="/trips/:id/itinerary" element={<Itinerary />} />
+          <Route path="/trips/:id/bookings" element={<Bookings />} />
+          <Route path="/trips/:id/expenses" element={<Expenses />} />
+          <Route path="/trips/:id/documents" element={<Documents />} />
+          <Route path="/trips/:id/journal" element={<Journal />} />
           <Route path="/templates" element={<Templates />} />
           <Route path="/templates/default/:key" element={<TemplateDetail kind="default" />} />
           <Route path="/templates/mine/:key" element={<TemplateDetail kind="mine" />} />

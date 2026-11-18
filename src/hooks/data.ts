@@ -84,3 +84,17 @@ export function useDisplayName(): [string, (n: string) => void] {
   const name = useSyncExternalStore((cb) => { window.addEventListener('voyago-name', cb); return () => window.removeEventListener('voyago-name', cb); }, get);
   return [name, (n: string) => { localStorage.setItem('voyago.name', n.trim()); window.dispatchEvent(new Event('voyago-name')); }];
 }
+
+import type { Booking, Expense, ItineraryItem, JournalEntry, TripDocument } from '../types';
+
+function useTripRows<T extends { deleted: boolean }>(table: 'documents' | 'itinerary' | 'bookings' | 'expenses' | 'journal', tripId: string | undefined): T[] | undefined {
+  return useLiveQuery(async () => {
+    if (!tripId) return [];
+    return ((await db.table(table).where('trip_id').equals(tripId).toArray()) as T[]).filter((r) => !r.deleted);
+  }, [tripId, table]);
+}
+export const useDocuments = (id?: string) => useTripRows<TripDocument>('documents', id);
+export const useItinerary = (id?: string) => useTripRows<ItineraryItem>('itinerary', id);
+export const useBookings = (id?: string) => useTripRows<Booking>('bookings', id);
+export const useExpenses = (id?: string) => useTripRows<Expense>('expenses', id);
+export const useJournal = (id?: string) => useTripRows<JournalEntry>('journal', id);

@@ -5,7 +5,7 @@ import {
   Car, Sparkles, Bell, Copy, Settings, Upload, Download, ListChecks, FileText, Map, Wallet, Camera,
   BookOpen, X, Luggage, WifiOff, Cloud, ShieldCheck, Undo2, Send, Palmtree, Mountain, Snowflake,
   Heart, Tent, Waves, Filter, Layers, RotateCcw, LogOut, Info, Image, Clock, RefreshCw, CircleAlert,
-  CheckCircle2, Brain, Lock, Trash
+  CheckCircle2, Brain, Lock, Trash, Ticket, Receipt, ExternalLink, Paperclip
 } from 'lucide-react';
 import type { LucideProps } from 'lucide-react';
 
@@ -16,7 +16,7 @@ const MAP = {
   Car, Sparkles, Bell, Copy, Settings, Upload, Download, ListChecks, FileText, Map, Wallet, Camera,
   BookOpen, X, Luggage, WifiOff, Cloud, ShieldCheck, Undo2, Send, Palmtree, Mountain, Snowflake,
   Heart, Tent, Waves, Filter, Layers, RotateCcw, LogOut, Info, Image, Clock, RefreshCw, CircleAlert,
-  CheckCircle2, Brain, Lock, Trash
+  CheckCircle2, Brain, Lock, Trash, Ticket, Receipt, ExternalLink, Paperclip
 } as const;
 
 export type IconName = keyof typeof MAP;

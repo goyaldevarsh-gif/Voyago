@@ -5,13 +5,6 @@ import { useItems, useTrip } from '../hooks/data';
 import { countdown, fmtRange, nightsOf } from '../lib/util';
 import { deleteTrip, restoreTrip, statsOf, templateFromTrip, updateTrip, createTrip, copyTripItems } from '../db/repo';
 
-const SOON = [
-  { icon: 'FileText', label: 'Documents', sub: 'Tickets, IDs, bookings' },
-  { icon: 'Map', label: 'Itinerary', sub: 'Day-wise plan' },
-  { icon: 'Wallet', label: 'Bookings', sub: 'Flights, hotels' },
-  { icon: 'Wallet', label: 'Expenses', sub: 'Budget and spending' },
-  { icon: 'BookOpen', label: 'Travel Journal', sub: 'Photos and notes' }
-];
 
 export default function TripOverview() {
   const { id } = useParams();
@@ -28,6 +21,11 @@ export default function TripOverview() {
     { icon: 'ListChecks', label: 'Packing List', sub: `${s.pct}% complete`, to: `/trips/${trip.id}/packing`, tone: 'bg-teal-50 text-teal' },
     { icon: 'LayoutTemplate', label: 'Packing Templates', sub: 'Apply or save one', to: '/templates', tone: 'bg-sky-50 text-sky-600' },
     { icon: 'FileText', label: 'Trip Notes', sub: trip.notes ? 'Has notes' : 'Add notes', to: `/trips/${trip.id}/notes`, tone: 'bg-amber-50 text-amber-600' },
+    { icon: 'Map', label: 'Itinerary', sub: 'Day plan and hidden gems', to: `/trips/${trip.id}/itinerary`, tone: 'bg-emerald-50 text-emerald-600' },
+    { icon: 'Ticket', label: 'Bookings', sub: 'Tickets, stays, PNRs', to: `/trips/${trip.id}/bookings`, tone: 'bg-rose-50 text-rose-600' },
+    { icon: 'Wallet', label: 'Expenses', sub: 'Budget and spending', to: `/trips/${trip.id}/expenses`, tone: 'bg-orange-50 text-orange-600' },
+    { icon: 'FileText', label: 'Documents', sub: 'IDs, tickets, files', to: `/trips/${trip.id}/documents`, tone: 'bg-cyan-50 text-cyan-600' },
+    { icon: 'BookOpen', label: 'Travel Journal', sub: 'Moments and photos', to: `/trips/${trip.id}/journal`, tone: 'bg-fuchsia-50 text-fuchsia-600' },
     { icon: 'ShieldCheck', label: 'Final Review', sub: s.essentialPending.length ? `${s.essentialPending.length} essentials pending` : 'Check before you go', to: `/trips/${trip.id}/review`, tone: 'bg-indigo-50 text-indigo-600' }
   ];
 
@@ -103,17 +101,6 @@ export default function TripOverview() {
                 <p className="text-xs text-slate2 mt-0.5">{m.sub}</p>
               </Card>
             </Link>
-          ))}
-        </div>
-
-        <h2 className="font-extrabold mt-6 mb-2 text-sm text-slate2 uppercase tracking-wide">Coming soon</h2>
-        <div className="grid grid-cols-1 gap-2">
-          {SOON.map((m) => (
-            <div key={m.label} className="bg-white/70 rounded-xl px-4 py-3 flex items-center gap-3 opacity-80">
-              <Icon name={m.icon} size={18} className="text-slate2" />
-              <div className="flex-1"><p className="font-bold text-sm">{m.label}</p><p className="text-xs text-slate2">{m.sub}</p></div>
-              <Chip tone="soon">Coming soon</Chip>
-            </div>
           ))}
         </div>
 

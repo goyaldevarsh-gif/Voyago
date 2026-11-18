@@ -36,6 +36,7 @@ export interface Trip extends Base {
   weather: WeatherSummary | null;
   status: 'planning' | 'packed' | 'completed';
   international: boolean;
+  budget?: number | null;
 }
 
 export interface Traveller extends Base {
@@ -149,7 +150,12 @@ export type SyncTable =
   | 'preferences'
   | 'conversations'
   | 'messages'
-  | 'actionLogs';
+  | 'actionLogs'
+  | 'documents'
+  | 'itinerary'
+  | 'bookings'
+  | 'expenses'
+  | 'journal';
 
 /** local table name -> Postgres table name */
 export const REMOTE_TABLE: Record<SyncTable, string> = {
@@ -162,7 +168,12 @@ export const REMOTE_TABLE: Record<SyncTable, string> = {
   preferences: 'user_preferences',
   conversations: 'chat_conversations',
   messages: 'chat_messages',
-  actionLogs: 'ai_action_logs'
+  actionLogs: 'ai_action_logs',
+  documents: 'trip_documents',
+  itinerary: 'itinerary_items',
+  bookings: 'bookings',
+  expenses: 'expenses',
+  journal: 'journal_entries'
 };
 
 /** Tables the client may write to. actionLogs are written by the server only. */
@@ -175,5 +186,30 @@ export const WRITABLE: SyncTable[] = [
   'templateItems',
   'preferences',
   'conversations',
-  'messages'
+  'messages',
+  'documents',
+  'itinerary',
+  'bookings',
+  'expenses',
+  'journal'
 ];
+
+export interface TripDocument extends Base {
+  trip_id: string; kind: string; title: string; notes: string;
+  file_name: string | null; mime: string | null; size_bytes: number | null; storage_path: string | null;
+}
+export interface ItineraryItem extends Base {
+  trip_id: string; kind: 'plan' | 'gem'; day_date: string | null; start_time: string | null;
+  title: string; location: string; notes: string; tag: string; done: boolean; sort_order: number;
+}
+export interface Booking extends Base {
+  trip_id: string; kind: string; title: string; provider: string; reference: string;
+  start_date: string | null; end_date: string | null; amount: number | null;
+  status: 'confirmed' | 'pending' | 'cancelled'; notes: string;
+}
+export interface Expense extends Base {
+  trip_id: string; category: string; amount: number; note: string; spent_on: string | null; paid_by: string;
+}
+export interface JournalEntry extends Base {
+  trip_id: string; entry_date: string | null; place: string; body: string; photo: string | null;
+}

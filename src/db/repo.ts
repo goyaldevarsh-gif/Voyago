@@ -304,7 +304,9 @@ export async function exportAll(): Promise<string> {
     trips: await db.trips.toArray(), travellers: await db.travellers.toArray(),
     items: await db.items.toArray(), categories: await db.categories.toArray(),
     templates: await db.templates.toArray(), templateItems: await db.templateItems.toArray(),
-    preferences: await db.preferences.toArray()
+    preferences: await db.preferences.toArray(), documents: await db.documents.toArray(),
+    itinerary: await db.itinerary.toArray(), bookings: await db.bookings.toArray(),
+    expenses: await db.expenses.toArray(), journal: await db.journal.toArray()
   };
   return JSON.stringify(data, null, 2);
 }
@@ -313,7 +315,7 @@ export async function exportAll(): Promise<string> {
 export async function importAll(json: string): Promise<number> {
   const d = JSON.parse(json);
   if (d.app !== 'voyago') throw new Error('Not a Voyago backup file');
-  const tables: SyncTable[] = ['trips', 'travellers', 'items', 'categories', 'templates', 'templateItems', 'preferences'];
+  const tables: SyncTable[] = ['trips', 'travellers', 'items', 'categories', 'templates', 'templateItems', 'preferences', 'documents', 'itinerary', 'bookings', 'expenses', 'journal'];
   let n = 0;
   for (const t of tables) {
     for (const r of (d[t] ?? []) as Row[]) {
@@ -326,7 +328,7 @@ export async function importAll(json: string): Promise<number> {
 
 /** Wipe everything on this device (and queue deletions for the backend). */
 export async function deleteAllMyData(): Promise<void> {
-  const tables: SyncTable[] = ['trips', 'travellers', 'items', 'categories', 'templates', 'templateItems', 'preferences'];
+  const tables: SyncTable[] = ['trips', 'travellers', 'items', 'categories', 'templates', 'templateItems', 'preferences', 'documents', 'itinerary', 'bookings', 'expenses', 'journal'];
   for (const t of tables) {
     const rows = (await db.table(t).toArray()) as Row[];
     for (const r of rows) if (!r.deleted) await putRow(t, { ...r, deleted: true });

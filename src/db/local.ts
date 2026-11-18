@@ -1,7 +1,7 @@
 import Dexie, { type Table } from 'dexie';
 import type {
   ActionLog, Category, ChatMessage, Conversation, Item, OutboxEntry, Preference,
-  Template, TemplateItem, Traveller, Trip
+  Template, TemplateItem, Traveller, Trip, TripDocument, ItineraryItem, Booking, Expense, JournalEntry
 } from '../types';
 
 /**
@@ -21,6 +21,12 @@ export class VoyagoDB extends Dexie {
   messages!: Table<ChatMessage, string>;
   actionLogs!: Table<ActionLog, string>;
   outbox!: Table<OutboxEntry, string>;
+  documents!: Table<TripDocument, string>;
+  itinerary!: Table<ItineraryItem, string>;
+  bookings!: Table<Booking, string>;
+  expenses!: Table<Expense, string>;
+  journal!: Table<JournalEntry, string>;
+  docFiles!: Table<{ id: string; blob: Blob }, string>;
   meta!: Table<{ key: string; value: unknown }, string>;
 
   constructor(name = 'voyago') {
@@ -38,6 +44,14 @@ export class VoyagoDB extends Dexie {
       actionLogs: 'id, conversation_id, created_at, updated_at',
       outbox: 'key, table, queued_at',
       meta: 'key'
+    });
+    this.version(2).stores({
+      documents: 'id, trip_id, updated_at',
+      itinerary: 'id, trip_id, updated_at',
+      bookings: 'id, trip_id, updated_at',
+      expenses: 'id, trip_id, updated_at',
+      journal: 'id, trip_id, updated_at',
+      docFiles: 'id'
     });
   }
 }
