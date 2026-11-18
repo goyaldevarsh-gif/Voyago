@@ -1,6 +1,8 @@
 import { Navigate, NavLink, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { Icon } from './components/icons';
+import { useEffect, useState } from 'react';
 import { useAuth } from './hooks/auth';
+import { applyUpdate, onUpdateReady } from './lib/updater';
 import { useSyncStatus } from './hooks/data';
 import Home from './pages/Home';
 import Trips from './pages/Trips';
@@ -35,6 +37,21 @@ function SyncBanner() {
   return null;
 }
 
+function UpdateBanner() {
+  const [ready, setReady] = useState(false);
+  useEffect(() => onUpdateReady(setReady), []);
+  if (!ready) return null;
+  return (
+    <div className="sticky top-0 z-[80] bg-teal text-white safe-t" role="status">
+      <div className="max-w-2xl mx-auto flex items-center gap-3 px-4 py-2.5">
+        <Icon name="RefreshCw" size={16} />
+        <span className="flex-1 text-sm font-bold">New version available</span>
+        <button onClick={applyUpdate} className="h-8 px-4 rounded-lg bg-white text-teal-600 text-sm font-extrabold active:scale-95">Update</button>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   const { phase } = useAuth();
   const loc = useLocation();
@@ -49,6 +66,7 @@ export default function App() {
 
   return (
     <div className="min-h-full flex flex-col">
+      <UpdateBanner />
       <SyncBanner />
       <div className="flex-1 w-full max-w-2xl mx-auto pb-28">
         <Routes>

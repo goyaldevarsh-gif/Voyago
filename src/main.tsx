@@ -1,13 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { HashRouter } from 'react-router-dom';
-import { registerSW } from 'virtual:pwa-register';
+import { initUpdater } from './lib/updater';
 import './index.css';
 import App from './App';
 import { UiProvider } from './components/ui';
 import { AuthProvider } from './hooks/auth';
 
-registerSW({ immediate: true });
+initUpdater();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
