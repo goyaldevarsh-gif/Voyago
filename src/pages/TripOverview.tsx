@@ -60,18 +60,18 @@ export default function TripOverview() {
 
   return (
     <div>
-      <TripCover trip={trip} className="h-56 rounded-b-3xl safe-t">
+      <TripCover trip={trip} className="h-40 rounded-b-3xl safe-t">
         <div className="absolute inset-x-0 top-0 flex justify-between p-3 safe-t">
           <IconButton icon="ChevronLeft" label="Back" onClick={() => nav('/trips')} className="bg-white/90" />
           <IconButton icon="Pencil" label="Edit trip" onClick={() => nav(`/trips/${trip.id}/edit`)} className="bg-white/90" />
         </div>
       </TripCover>
 
-      <div className="px-4 -mt-10 relative">
+      <div className="px-4 -mt-8 relative">
         <Card className="p-4">
           <div className="flex items-start justify-between gap-2">
             <div className="min-w-0">
-              <h1 className="text-xl font-extrabold truncate">{trip.name}</h1>
+              <h1 className="text-xl font-extrabold leading-tight">{trip.name}</h1>
               <p className="text-sm text-slate2">{fmtRange(trip.start_date, trip.end_date)}</p>
               {trip.destination && <p className="text-xs text-slate2 mt-0.5 flex items-center gap-1"><Icon name="MapPin" size={12} />{trip.destination}</p>}
             </div>
@@ -92,13 +92,15 @@ export default function TripOverview() {
           {trip.weather && <p className="text-xs text-slate2 mt-3 flex items-center gap-1.5"><Icon name="CloudSun" size={14} className="text-teal" />{trip.weather.min_c}° to {trip.weather.max_c}°C, rain on {trip.weather.rain_pct}% of days</p>}
         </Card>
 
-        <div className="grid grid-cols-2 gap-3 mt-4">
+        <div className="grid grid-cols-2 gap-2.5 mt-4">
           {modules.map((m) => (
             <Link key={m.label} to={m.to}>
-              <Card className="p-4 h-full">
-                <span className={`h-10 w-10 rounded-xl grid place-items-center ${m.tone}`}><Icon name={m.icon} size={20} /></span>
-                <p className="font-extrabold mt-3 leading-tight">{m.label}</p>
-                <p className="text-xs text-slate2 mt-0.5">{m.sub}</p>
+              <Card className="p-3 h-full flex items-center gap-3">
+                <span className={`h-10 w-10 shrink-0 rounded-xl grid place-items-center ${m.tone}`}><Icon name={m.icon} size={20} /></span>
+                <span className="min-w-0">
+                  <p className="font-extrabold leading-tight text-[15px]">{m.label}</p>
+                  <p className="text-[11.5px] text-slate2 mt-0.5 leading-snug">{m.sub}</p>
+                </span>
               </Card>
             </Link>
           ))}

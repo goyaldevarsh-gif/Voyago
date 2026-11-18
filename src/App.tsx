@@ -77,8 +77,8 @@ export default function App() {
       {!hideFab && (
         <button onClick={() => nav(/^\/trips\/[^/]+/.test(path) && !/\/new$/.test(path) ? `/chat/${path.split('/')[2]}` : '/chat')}
           aria-label="Ask Voyago AI"
-          className="fixed z-30 right-4 bottom-24 h-14 pl-4 pr-5 rounded-full bg-navy text-white shadow-lg flex items-center gap-2 font-bold active:scale-95 transition">
-          <Icon name="Sparkles" size={20} className="text-teal-50" /> Ask Voyago
+          className="fixed z-30 right-4 bottom-20 h-12 w-12 rounded-full bg-navy text-white shadow-lg grid place-items-center active:scale-95 transition">
+          <Icon name="Sparkles" size={22} className="text-teal-50" />
         </button>
       )}
 

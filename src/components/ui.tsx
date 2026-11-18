@@ -90,11 +90,11 @@ export function Field({ label, children, hint }: { label: string; children: Reac
     </label>
   );
 }
-const inputCls = 'w-full h-12 rounded-xl border border-slate-200 bg-white px-3.5 text-[15px] focus:border-teal';
+const inputCls = 'w-full h-12 rounded-xl border border-slate-200 bg-white px-3.5 text-base focus:border-teal';
 export const Input = (p: React.InputHTMLAttributes<HTMLInputElement>) => <input {...p} className={`${inputCls} ${p.className ?? ''}`} />;
 export const Select = (p: React.SelectHTMLAttributes<HTMLSelectElement>) => <select {...p} className={`${inputCls} ${p.className ?? ''}`} />;
 export const Textarea = (p: React.TextareaHTMLAttributes<HTMLTextAreaElement>) => (
-  <textarea {...p} className={`w-full rounded-xl border border-slate-200 bg-white p-3.5 text-[15px] focus:border-teal ${p.className ?? ''}`} />
+  <textarea {...p} className={`w-full rounded-xl border border-slate-200 bg-white p-3.5 text-base focus:border-teal ${p.className ?? ''}`} />
 );
 
 export function EmptyState({ icon, title, body, action }: { icon: string; title: string; body: string; action?: ReactNode }) {

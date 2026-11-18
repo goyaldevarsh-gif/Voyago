@@ -9,6 +9,8 @@ body { @apply bg-mist text-navy font-sans antialiased; -webkit-tap-highlight-col
 * { @apply outline-none; }
 :focus-visible { @apply ring-2 ring-teal ring-offset-2 ring-offset-mist rounded-lg; }
 input, select, textarea, button { font: inherit; }
+input, select, textarea { font-size: 16px; }
+html { overscroll-behavior-y: none; }
 .safe-b { padding-bottom: max(env(safe-area-inset-bottom), 12px); }
 .safe-t { padding-top: max(env(safe-area-inset-top), 0px); }
 .no-scrollbar::-webkit-scrollbar { display: none; }

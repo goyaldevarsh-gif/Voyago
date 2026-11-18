@@ -27,6 +27,8 @@ export default function Packing() {
   const [addOpen, setAddOpen] = useState(false);
   const [genOpen, setGenOpen] = useState(false);
   const [edit, setEdit] = useState<Item | null>(null);
+  const [closed, setClosed] = useState<Set<string>>(new Set());
+  const flip = (k: string) => setClosed((s) => { const x = new Set(s); if (x.has(k)) x.delete(k); else x.add(k); return x; });
 
   useEffect(() => {
     if (sp.get('generate') === '1' && trip && items && prefs) {
@@ -97,14 +99,17 @@ export default function Packing() {
           return (
             <section key={k} className="bg-white rounded-2xl shadow-card overflow-hidden">
               <div className="flex items-center gap-2 px-4 py-3 bg-slate-50">
-                <Icon name={view === 'category' ? catIcon(k) : 'Backpack'} size={18} className="text-teal" />
-                <h2 className="font-extrabold flex-1 text-[15px]">{k}</h2>
+                <button className="flex items-center gap-2 flex-1 min-w-0 text-left h-8" aria-expanded={!closed.has(k)} onClick={() => flip(k)}>
+                  <Icon name={view === 'category' ? catIcon(k) : 'Backpack'} size={18} className="text-teal shrink-0" />
+                  <h2 className="font-extrabold flex-1 text-[15px] truncate">{k}</h2>
+                  <Icon name={closed.has(k) ? 'ChevronRight' : 'ArrowDown'} size={16} className="text-slate2 shrink-0" />
+                </button>
                 <span className="text-xs font-bold text-slate2">{done}/{list.length}</span>
                 <button className="text-xs font-bold text-teal px-2 h-8" onClick={() => void setManyPacked(list.map((i) => i.id), done !== list.length)}>
                   {done === list.length ? 'Unpack all' : 'Pack all'}
                 </button>
               </div>
-              <ul className="divide-y divide-slate-100">
+              {!closed.has(k) && <ul className="divide-y divide-slate-100">
                 {list.map((i) => (
                   <li key={i.id} className="flex items-center gap-3 px-4 py-3">
                     <button role="checkbox" aria-checked={i.packed} aria-label={`Packed: ${i.name}`} onClick={() => void setPacked(i.id, !i.packed)}
@@ -112,15 +117,15 @@ export default function Packing() {
                       {i.packed && <Icon name="Check" size={16} strokeWidth={3} />}
                     </button>
                     <button className="flex-1 min-w-0 text-left" onClick={() => setEdit(i)}>
-                      <p className={`font-semibold truncate ${i.packed ? 'line-through text-slate-400' : ''}`}>
+                      <p className={`font-semibold leading-snug ${i.packed ? 'line-through text-slate-400' : ''}`}>
                         {i.priority === 'essential' && <Icon name="Star" size={13} className="inline text-warn fill-warn mr-1 -mt-0.5" />}{i.name}
                       </p>
-                      {(i.notes || i.quantity > 1) && <p className="text-xs text-slate2 truncate">{i.quantity > 1 ? `×${i.quantity}` : ''}{i.quantity > 1 && i.notes ? ' · ' : ''}{i.notes}</p>}
+                      {(i.notes || i.quantity > 1) && <p className="text-xs text-slate2 line-clamp-2">{i.quantity > 1 ? `×${i.quantity}` : ''}{i.quantity > 1 && i.notes ? ' · ' : ''}{i.notes}</p>}
                     </button>
                     <IconButton icon="Trash2" label={`Remove ${i.name}`} onClick={() => void remove(i)} className="text-slate-400" />
                   </li>
                 ))}
-              </ul>
+              </ul>}
             </section>
           );
         })}

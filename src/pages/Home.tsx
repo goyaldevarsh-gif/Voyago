@@ -54,12 +54,12 @@ export default function Home() {
 
       {next ? (
         <Link to={`/trips/${next.id}`} className="block mt-5">
-          <TripCover trip={next} className="rounded-3xl h-52 shadow-card">
+          <TripCover trip={next} className="rounded-3xl h-56 shadow-card">
             <div className="absolute inset-0 bg-gradient-to-t from-navy/85 via-navy/25 to-transparent" />
             <div className="absolute inset-x-0 bottom-0 p-4 text-white">
               <div className="flex items-end justify-between gap-2">
                 <div className="min-w-0">
-                  <h2 className="text-2xl font-extrabold truncate">{next.name}</h2>
+                  <h2 className="text-2xl font-extrabold leading-tight line-clamp-2">{next.name}</h2>
                   <p className="text-sm text-white/85">{fmtRange(next.start_date, next.end_date)}</p>
                 </div>
                 <span className="bg-white/90 text-navy text-xs font-extrabold rounded-full px-3 py-1 shrink-0">{countdown(next.start_date).label}</span>
