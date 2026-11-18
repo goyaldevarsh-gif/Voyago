@@ -1,0 +1,11 @@
+node_modules
+dist
+.env
+.env.*
+!.env.example
+*.local
+.DS_Store
+work/
+# Personal data (medicines, personal lists) must never be committed to a public repo
+personal/
+supabase/.temp
