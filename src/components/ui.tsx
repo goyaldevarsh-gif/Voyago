@@ -127,7 +127,7 @@ export function TopBar({ title, back, right, sub }: { title: string; back?: stri
 
 /* ---------------- trip cover ---------------- */
 
-const TONES = ['from-teal to-emerald-500', 'from-sky-500 to-indigo-500', 'from-navy to-navy-500', 'from-amber-400 to-rose-400', 'from-cyan-500 to-teal', 'from-indigo-500 to-fuchsia-500'];
+const TONES = ['from-navy to-teal', 'from-navy to-sky-600', 'from-teal to-navy', 'from-navy to-emerald-600'];
 const TYPE_ICON: Record<string, string> = { vacation: 'Palmtree', business: 'Briefcase', wedding: 'Heart', adventure: 'Mountain', medical: 'BriefcaseMedical', other: 'Map' };
 
 export function tripTone(t: Pick<Trip, 'destination' | 'name'>): string {

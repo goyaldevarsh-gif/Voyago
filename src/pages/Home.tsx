@@ -3,6 +3,7 @@ import { Button, Card, EmptyState, Chip, ProgressBar, TripCover, useUi } from '.
 import { Icon } from '../components/icons';
 import { TripRow, tripProgress } from '../components/TripCard';
 import { useAllItems, useDisplayName, useTrips } from '../hooks/data';
+import { isLastMinute } from '../lib/lastMinute';
 import { countdown, fmtRange, greeting, nightsOf, todayStr } from '../lib/util';
 import { addItems, createTrip } from '../db/repo';
 import { generate } from '../lib/generator';
@@ -53,33 +54,34 @@ export default function Home() {
       </header>
 
       {next ? (
-        <Link to={`/trips/${next.id}`} className="block mt-5">
-          <TripCover trip={next} className="rounded-3xl h-56 shadow-card">
-            <div className="absolute inset-0 bg-gradient-to-t from-navy/85 via-navy/25 to-transparent" />
-            <div className="absolute inset-x-0 bottom-0 p-4 text-white">
-              <div className="flex items-end justify-between gap-2">
+        <TripCover trip={next} className="mt-5 rounded-3xl shadow-card">
+          <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/40 to-navy/10" />
+          <div className="relative p-5 text-white">
+            <Link to={`/trips/${next.id}`} className="block">
+              <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <h2 className="text-2xl font-extrabold leading-tight line-clamp-2">{next.name}</h2>
-                  <p className="text-sm text-white/85">{fmtRange(next.start_date, next.end_date)}</p>
+                  <p className="text-[11px] font-extrabold tracking-widest uppercase text-white/70">Next trip</p>
+                  <h2 className="text-2xl font-extrabold leading-tight mt-0.5 line-clamp-2">{next.name}</h2>
+                  <p className="text-sm text-white/85 mt-1">{fmtRange(next.start_date, next.end_date)} · {nightsOf(next.start_date, next.end_date)} nights</p>
                 </div>
-                <span className="bg-white/90 text-navy text-xs font-extrabold rounded-full px-3 py-1 shrink-0">{countdown(next.start_date).label}</span>
+                <span className="bg-white text-navy text-xs font-extrabold rounded-full px-3 py-1.5 shrink-0">{countdown(next.start_date).label}</span>
               </div>
               <PackingMini trip={next.id} items={items} />
+            </Link>
+            <div className="grid grid-cols-2 gap-2.5 mt-4">
+              <button onClick={() => nav(`/trips/${next.id}/packing`)} className="h-11 rounded-xl bg-white text-navy font-bold text-[15px] active:scale-[.98]">
+                {tripProgress(items, next.id).total === 0 ? 'Start packing' : 'Continue packing'}
+              </button>
+              <button onClick={() => nav(`/trips/${next.id}/travel-day`)} className="h-11 rounded-xl bg-white/15 text-white font-bold text-[15px] border border-white/30 active:scale-[.98]">Travel day</button>
             </div>
-          </TripCover>
-        </Link>
+          </div>
+        </TripCover>
       ) : (
         <Card className="mt-5"><EmptyState icon="Luggage" title="No trips yet" body="Create a trip and Voyago will build a packing list that fits it."
           action={<Button icon="Plus" onClick={() => nav('/trips/new')}>Create your first trip</Button>} /></Card>
       )}
 
-      {next && (
-        <Button full icon="ChevronRight" className="mt-3" onClick={() => nav(`/trips/${next.id}/packing`)}>
-          {tripProgress(items, next.id).total === 0 ? 'Start Packing' : 'Continue Packing'}
-        </Button>
-      )}
-
-      <div className="grid grid-cols-4 gap-2.5 mt-5">
+      <div className="grid grid-cols-4 gap-2.5 mt-4">
         {qa.map((q) => (
           <button key={q.label} onClick={q.run} className="bg-white rounded-2xl shadow-card py-3 px-1 flex flex-col items-center gap-1.5 text-[11.5px] font-bold text-center leading-tight active:scale-95 transition">
             <span className="h-10 w-10 rounded-xl bg-teal-50 text-teal grid place-items-center"><Icon name={q.icon} size={20} /></span>
@@ -115,26 +117,30 @@ function PackingMini({ trip, items }: { trip: string; items: ReturnType<typeof u
 
 function PendingPreview({ tripId }: { tripId: string }) {
   const items = useAllItems();
+  const nav = useNavigate();
   if (!items) return null;
-  const pending = items.filter((i) => i.trip_id === tripId && !i.packed);
-  if (pending.length === 0) return null;
+  const mine = items.filter((i) => i.trip_id === tripId);
+  const pending = mine.filter((i) => !i.packed);
+  if (mine.length === 0 || pending.length === 0) return null;
   const essential = pending.filter((i) => i.priority === 'essential');
-  const show = (essential.length ? essential : pending).slice(0, 4);
+  const morning = pending.filter((i) => isLastMinute(i));
+  const tiles = [
+    { n: essential.length, label: 'Essentials left', icon: 'Star', to: `/trips/${tripId}/packing`, tone: 'text-warn' },
+    { n: morning.length, label: 'Morning of travel', icon: 'Clock', to: `/trips/${tripId}/travel-day`, tone: 'text-teal' },
+    { n: pending.length, label: 'Total pending', icon: 'ListChecks', to: `/trips/${tripId}/packing`, tone: 'text-slate2' }
+  ];
   return (
-    <Card className="mt-5 p-4">
-      <div className="flex items-center justify-between">
-        <h2 className="font-extrabold">Still to pack</h2>
-        <Chip tone={essential.length ? 'warn' : 'soon'}>{pending.length} pending{essential.length ? `, ${essential.length} essential` : ''}</Chip>
-      </div>
-      <ul className="mt-2 divide-y divide-slate-100">
-        {show.map((i) => (
-          <li key={i.id} className="py-2 flex items-center gap-2 text-sm">
-            {i.priority === 'essential' && <Icon name="Star" size={14} className="text-warn fill-warn" />}
-            <span className="font-semibold flex-1 truncate">{i.name}</span>
-            <span className="text-slate2 text-xs">{i.category}</span>
-          </li>
+    <section className="mt-5">
+      <h2 className="font-extrabold mb-2">Needs attention</h2>
+      <div className="grid grid-cols-3 gap-2.5">
+        {tiles.map((t) => (
+          <button key={t.label} onClick={() => nav(t.to)} className="bg-white rounded-2xl shadow-card p-3 text-left active:scale-[.98]">
+            <Icon name={t.icon} size={18} className={t.tone} />
+            <p className="text-2xl font-extrabold mt-2 leading-none">{t.n}</p>
+            <p className="text-[11.5px] text-slate2 font-semibold mt-1 leading-tight">{t.label}</p>
+          </button>
         ))}
-      </ul>
-    </Card>
+      </div>
+    </section>
   );
 }
