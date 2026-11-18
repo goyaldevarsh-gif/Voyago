@@ -23,7 +23,10 @@ export default function Packing() {
   const [sp, setSp] = useSearchParams();
   const { toast } = useUi();
   const [q, setQ] = useState('');
-  const [filter, setFilter] = useState<Filter>('all');
+  const [filter, setFilter] = useState<Filter>(() => {
+    const f = new URLSearchParams(window.location.hash.split('?')[1] ?? '').get('filter');
+    return f === 'essential' || f === 'pending' || f === 'packed' ? f : f === 'last' ? 'last' : 'all';
+  });
   const [view, setView] = useState<'category' | 'bag'>('category');
   const [addOpen, setAddOpen] = useState(false);
   const [genOpen, setGenOpen] = useState(false);
